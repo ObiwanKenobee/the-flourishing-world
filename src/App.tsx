@@ -8,6 +8,7 @@ import { InstitutionsArchive } from './components/InstitutionsArchive';
 import { KenyaPilotSection } from './components/KenyaPilotSection';
 import { TrajectoryAndFrameworkSection } from './components/TrajectoryAndFrameworkSection';
 import { AuditWorkbench } from './components/AuditWorkbench';
+import { BuildSequenceProgressBar } from './components/BuildSequenceProgressBar';
 
 export default function App() {
   const [activeCommitmentId, setActiveCommitmentId] = useState<string>(
@@ -88,6 +89,8 @@ export default function App() {
           </div>
         </div>
       </header>
+
+      <BuildSequenceProgressBar />
 
       <main id="top">
         {/* Hero: Starting With the Human Person & Moral Foundations */}

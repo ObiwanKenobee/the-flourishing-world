@@ -132,7 +132,7 @@ export function TrajectoryAndFrameworkSection() {
         </div>
 
         {/* Part B: 9-Dimension Flourishing Framework */}
-        <div className="mt-20">
+        <div id="flourishing-framework" className="mt-20 scroll-mt-16">
           <div className="max-w-3xl">
             <p className="text-xs font-medium uppercase tracking-[0.14em] text-[#57534E]">
               Section 06 · Multidimensional Evaluation

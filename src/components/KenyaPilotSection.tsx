@@ -93,7 +93,10 @@ export function KenyaPilotSection() {
         </div>
 
         {/* Interactive 11-Stage Build Sequence */}
-        <div className="mt-16 border border-[#E5DFD3] bg-[#FFFFFF]">
+        <div
+          id="pilot-sequence"
+          className="mt-16 scroll-mt-16 border border-[#E5DFD3] bg-[#FFFFFF]"
+        >
           <div className="flex flex-col gap-3 border-b border-[#E5DFD3] px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h3 className="font-serif text-xl font-semibold text-[#1C1917]">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Download, RotateCcw, ShieldAlert } from 'lucide-react';
+import { Check, Copy, Download, RotateCcw, ShieldAlert, Terminal } from 'lucide-react';
 import {
   FOUNDATIONAL_INSTITUTIONS,
   OPERATING_PRINCIPLES,
@@ -33,7 +33,10 @@ const DEFAULT_DRAFT: ProposalDraft = {
 };
 
 export function AuditWorkbench({ preloadedInstitutionId }: AuditWorkbenchProps) {
-  const [activeTab, setActiveTab] = useState<'tester' | 'critique'>('tester');
+  const [activeTab, setActiveTab] = useState<'tester' | 'critique' | 'build-guide'>(
+    'tester'
+  );
+  const [copiedCmd, setCopiedCmd] = useState<string | null>(null);
   const [draft, setDraft] = useState<ProposalDraft>(DEFAULT_DRAFT);
   const [ratings, setRatings] = useState<Record<number, PrincipleRating>>(() => {
     const initial: Record<number, PrincipleRating> = {};
@@ -143,6 +146,16 @@ ${principleLines}
     setExportedNote('Downloaded Markdown strategic stress-test brief.');
   };
 
+  const handleCopyCommand = async (cmd: string) => {
+    try {
+      await navigator.clipboard.writeText(cmd);
+      setCopiedCmd(cmd);
+      window.setTimeout(() => setCopiedCmd(null), 1800);
+    } catch {
+      setCopiedCmd(null);
+    }
+  };
+
   const counts = OPERATING_PRINCIPLES.reduce(
     (acc, p) => {
       const r = ratings[p.number] ?? 'unaddressed';
@@ -205,6 +218,18 @@ ${principleLines}
               }`}
             >
               Blueprint Blind-Spot Critique
+            </button>
+            <button
+              role="tab"
+              aria-selected={activeTab === 'build-guide'}
+              onClick={() => setActiveTab('build-guide')}
+              className={`px-3.5 py-2 text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
+                activeTab === 'build-guide'
+                  ? 'bg-[#FFFFFF] text-[#1C1917] shadow-xs'
+                  : 'text-[#57534E] hover:text-[#1C1917]'
+              }`}
+            >
+              Build & ERESOLVE Guide
             </button>
           </div>
         </div>
@@ -430,7 +455,7 @@ ${principleLines}
               </div>
             </div>
           </div>
-        ) : (
+        ) : activeTab === 'critique' ? (
           /* Council Self-Critique Grid */
           <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
             {COUNCIL_CRITIQUES.map((item) => (
@@ -461,6 +486,180 @@ ${principleLines}
                 </div>
               </article>
             ))}
+          </div>
+        ) : (
+          /* Developer Build & ERESOLVE Resolution Guide */
+          <div className="mt-10 space-y-8">
+            {/* Root Cause Summary */}
+            <div className="border border-[#E5DFD3] bg-[#FFFFFF] p-7 sm:p-9">
+              <div className="flex flex-wrap items-center gap-2 text-xs text-[#57534E]">
+                <Terminal className="h-3.5 w-3.5 text-[#14532D]" aria-hidden="true" />
+                <span className="font-mono font-semibold text-[#14532D]">
+                  Developer Runbook
+                </span>
+                <span aria-hidden="true">·</span>
+                <span>npm install Peer Dependency Resolution</span>
+              </div>
+
+              <h3 className="mt-2 font-serif text-2xl font-semibold text-[#1C1917] sm:text-3xl">
+                Resolving the npm install ERESOLVE Dependency Conflict
+              </h3>
+
+              <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#44403C]">
+                When deploying or installing with npm (including Vercel CI builds where{' '}
+                <code className="font-mono text-xs bg-[#F3EFE7] px-1.5 py-0.5 text-[#1C1917]">
+                  package-lock.json
+                </code>{' '}
+                is absent),{' '}
+                <code className="font-mono text-xs bg-[#F3EFE7] px-1.5 py-0.5 text-[#1C1917]">
+                  npm install
+                </code>{' '}
+                halts with{' '}
+                <code className="font-mono text-xs bg-[#F3EFE7] px-1.5 py-0.5 text-[#78350F]">
+                  npm error code ERESOLVE
+                </code>{' '}
+                if the root{' '}
+                <code className="font-mono text-xs bg-[#F3EFE7] px-1.5 py-0.5 text-[#1C1917]">
+                  devDependencies
+                </code>{' '}
+                pins{' '}
+                <code className="font-mono text-xs bg-[#F3EFE7] px-1.5 py-0.5 text-[#1C1917]">
+                  esbuild@^0.25.0
+                </code>{' '}
+                while{' '}
+                <code className="font-mono text-xs bg-[#F3EFE7] px-1.5 py-0.5 text-[#1C1917]">
+                  vite@^8.3.0
+                </code>{' '}
+                (8.3.8) requires{' '}
+                <code className="font-mono text-xs bg-[#F3EFE7] px-1.5 py-0.5 text-[#1C1917]">
+                  peerOptional esbuild@"^0.27.0 || ^0.28.0"
+                </code>
+                .
+              </p>
+
+              {/* Package Compatibility Matrix */}
+              <div className="mt-6 overflow-x-auto border border-[#E5DFD3]">
+                <table className="w-full min-w-[600px] border-collapse text-left text-xs">
+                  <thead>
+                    <tr className="border-b border-[#E5DFD3] bg-[#F3EFE7]/70 font-semibold uppercase tracking-wider text-[#57534E]">
+                      <th className="px-4 py-3">Package</th>
+                      <th className="px-4 py-3">Conflicting Specifier</th>
+                      <th className="px-4 py-3">Required / Compatible Range</th>
+                      <th className="px-4 py-3">Clean Resolution</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#E5DFD3] font-mono tabular-nums">
+                    <tr>
+                      <td className="px-4 py-3 font-medium text-[#1C1917]">vite</td>
+                      <td className="px-4 py-3 text-[#57534E]">^8.3.0 (8.3.8)</td>
+                      <td className="px-4 py-3 text-[#44403C]">
+                        esbuild@^0.27.0 || ^0.28.0
+                      </td>
+                      <td className="px-4 py-3 text-[#14532D]">deduped esbuild@0.28.2</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 font-medium text-[#1C1917]">tsx</td>
+                      <td className="px-4 py-3 text-[#57534E]">^4.21.0 (4.23.15)</td>
+                      <td className="px-4 py-3 text-[#44403C]">esbuild@^0.28.0</td>
+                      <td className="px-4 py-3 text-[#14532D]">deduped esbuild@0.28.2</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 font-medium text-[#1C1917]">esbuild</td>
+                      <td className="px-4 py-3 text-[#78350F]">^0.25.0 (0.25.12)</td>
+                      <td className="px-4 py-3 text-[#14532D]">^0.28.0</td>
+                      <td className="px-4 py-3 text-[#14532D]">Update devDependencies</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Step-by-Step Resolution Guide */}
+            <div className="divide-y divide-[#E5DFD3] border border-[#E5DFD3] bg-[#FFFFFF]">
+              {[
+                {
+                  step: '01',
+                  title: 'Inspect the Active Dependency Tree',
+                  explanation:
+                    'Check which root or transitive packages conflict on esbuild before making edits. npm ls highlights invalid peer ranges immediately.',
+                  command: 'npm ls esbuild vite tsx',
+                },
+                {
+                  step: '02',
+                  title: 'Align esbuild in package.json devDependencies',
+                  explanation:
+                    'Update "esbuild": "^0.25.0" to "esbuild": "^0.28.0" in package.json so the root specifier satisfies both vite@8.3.x and tsx@4.23.x without forcing nested duplicates.',
+                  command:
+                    'npm pkg set devDependencies.esbuild="^0.28.0"',
+                },
+                {
+                  step: '03',
+                  title: 'Perform a Clean Install and Confirm Deduplication',
+                  explanation:
+                    'Remove stale node_modules (if present locally) and run a clean npm install so npm resolves a single deduped esbuild@0.28.x across vite and tsx.',
+                  command: 'rm -rf node_modules && npm install && npm ls esbuild vite tsx',
+                },
+                {
+                  step: '04',
+                  title: 'Verify TypeScript Lint and Vite Production Build',
+                  explanation:
+                    'Confirm both typechecking and Vite bundling succeed cleanly before pushing to main or triggering Vercel.',
+                  command: 'npm run lint && npm run build',
+                },
+                {
+                  step: '05',
+                  title: 'Commit package.json (and Note CI Fallback Discipline)',
+                  explanation:
+                    'Push the updated package.json to your deployment branch. Avoid relying on --legacy-peer-deps in production CI unless temporarily unblocking an upstream library release.',
+                  command: 'git add package.json && git commit -m "fix(deps): align esbuild to ^0.28.0 for vite 8"',
+                },
+              ].map((item) => (
+                <div
+                  key={item.step}
+                  className="p-6 sm:p-7 grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-center"
+                >
+                  <div className="lg:col-span-6 space-y-1.5">
+                    <div className="flex items-baseline gap-2.5">
+                      <span className="font-mono text-xs font-semibold text-[#14532D] tabular-nums">
+                        Step {item.step}
+                      </span>
+                      <h4 className="text-base font-semibold text-[#1C1917]">
+                        {item.title}
+                      </h4>
+                    </div>
+                    <p className="text-sm leading-relaxed text-[#44403C]">
+                      {item.explanation}
+                    </p>
+                  </div>
+
+                  <div className="lg:col-span-6">
+                    <div className="flex items-center justify-between gap-3 border border-[#E5DFD3] bg-[#FBF9F5] px-4 py-3">
+                      <code className="font-mono text-xs text-[#1C1917] overflow-x-auto whitespace-nowrap">
+                        {item.command}
+                      </code>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyCommand(item.command)}
+                        aria-label={`Copy command for Step ${item.step}`}
+                        className="inline-flex items-center gap-1.5 border border-[#D6CEBE] bg-[#FFFFFF] px-2.5 py-1 text-[11px] font-medium text-[#1C1917] transition-colors hover:bg-[#F3EFE7] whitespace-nowrap shrink-0"
+                      >
+                        {copiedCmd === item.command ? (
+                          <>
+                            <Check className="h-3 w-3 text-[#14532D]" aria-hidden="true" />
+                            <span className="text-[#14532D]">Copied</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="h-3 w-3 text-[#57534E]" aria-hidden="true" />
+                            <span>Copy</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
